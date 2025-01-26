@@ -28,11 +28,7 @@ void log_min(int& npar, double* gin, double& f, double* par, int iflag) {
             continue;
         }
          double obs = h1->GetBinContent(i);
-       if(obs > 0){
-         func_log += -2.0 * (obs * TMath::Log(model / obs) - model + obs);
-         } else {
-         func_log +=2*model;
-         }
+         func_log += -2.0 * (obs * TMath::Log(TMath::Poisson(h1->GetBinContent(i),model)));
         if(std::isnan(func_log)){
              std::cout << "NAN in bin " << i << " in h1" << std::endl;
            }
@@ -44,11 +40,8 @@ void log_min(int& npar, double* gin, double& f, double* par, int iflag) {
               continue;
            }
         double obs = h2->GetBinContent(i);
-           if(obs > 0){
-              func_log += -2.0 * (obs * TMath::Log(model2 / obs) - model2 + obs);
-           } else {
-            func_log+=2*model2;
-           }
+              func_log += -2.0 * (obs * TMath::Log(TMath::Poisson(h2->GetBinContent(i),model2)));
+           
            if(std::isnan(func_log)){
              std::cout << "NAN in bin " << i << " in h2" << std::endl;
             }
@@ -121,7 +114,6 @@ void fitTwoHistograms() {
     double N=sqrt(2*M_PI)*s*a;
     double a_error1= sqrt(2*M_PI)*s*error[0];
     std::cout<< "count =  "<< N<< " +-"<< a_error1<<"\n";
-    std::cout<< "chi2  "<<f1;
 }
 
 int main() {
